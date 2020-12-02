@@ -1,6 +1,22 @@
-from django.shortcuts import render
+from django.views.generic import View, ListView, DetailView
+
+from .models import Product, OrderItem, Order
 
 
-def store(request):
-    context = {}
-    return render(request, 'store.html', context)
+class StoreView(ListView):
+    model = Product
+    template_name = 'store.html'
+
+
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = 'product.html'
+
+
+class CartView(DetailView):
+    model = OrderItem
+    template_name = 'cart.html'
+
+
+class CheckoutView(View):
+    pass
