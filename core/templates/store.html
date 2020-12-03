@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <main>
+    <header class="jumbotron jumbotron-fluid mb-0 px-5">
+      <h1 class="display-3">The Character Market</h1>
+      <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent</p>
+    </header>
+    <nav class="navbar navbar-expand-lg navbar-light">
+
+      <!-- Collapse button -->
+      <button class="navbar-toggler" type="button" data-toggle="collapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Collapsible content -->
+      <div class="collapse navbar-collapse">
+
+        <!-- Product categories -->
+        <ul class="navbar-nav w-100 justify-content-center">
+          <li class="category active">
+            <a href="" class="nav-link">All</a>
+          </li>
+          <li class="category">
+            <a href="" class="nav-link">Art</a>
+          </li>
+          <li class="category">
+            <a href="" class="nav-link">Fun</a>
+          </li>
+          <li class="category">
+            <a href="" class="nav-link">Home</a>
+          </li>
+          <li class="category">
+            <a href="" class="nav-link">Kitchen & Bar</a>
+          </li>
+          <li class="category">
+            <a href="" class="nav-link">Garden</a>
+          </li>
+          <li class="category">
+            <a href="" class="nav-link">Tech</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <hr class="mt-0" />
+    <section class="container">
+      <div class="row">
+        {% for product in object_list %}
+          <div class="col-lg-3 col-md-6 mb-4">
+            <a href="{% url 'core:product' product.slug %}">
+              <div class="card">
+                <div class="overlay">
+                  <img class="card-img-top thumbnail" src="{{ product.imageURL }}" />
+                </div>
+                <div class="card-body text-center">
+                  <h6><strong>{{ product.name }}</strong><h6>
+                  <h6>${{ product.price }}</h6>
+                </div>
+              </div>
+            </a>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  <main>
+{% endblock content %}
+
