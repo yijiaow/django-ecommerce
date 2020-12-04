@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<main class="p-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <img src="{{ object.imageURL }}" class="w-100" alt="{{ object.name }}" />
+      </div>
+      <div class="col-md-6 pl-5 pr-5">
+        <h3 class="lead font-weight-bold">{{ object.name }}</h3>
+        <p>{{ object.description }}</p>
+        {% if object.discount_price %}
+        <p class="lead">
+          <span><del>{{ object.price }}</del></span>
+          <span>${{ object.discount_price }}</span> 
+        </p>
+        {% else %}
+        <span class="lead">${{ object.price }}</span>
+        {% endif %}
+        <label for="stepper" class="d-block mt-3">Quantity</label>
+        <div class="stepper mb-5">
+          <button class="custom-btn" disabled>
+            <i class="fa fa-minus" aria-hidden="true"></i>
+          </button>
+          <input id="stepper" value="1" min="1" max="10" readonly />
+          <button class="custom-btn">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+          </button>
+        </div>
+        <a href="" class="btn btn-primary btn-lg">
+          ADD TO CART
+          <i class="fas fa-shopping-cart"></i>
+        </a>
+    </div>
+  </div>
+</main>
+{% endblock content %}
