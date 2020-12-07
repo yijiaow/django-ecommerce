@@ -15,6 +15,9 @@ class ProductDetailView(DetailView):
     model = Product
     template_name = 'product.html'
 
+    def post(self, *args, **kwargs):
+        form = ProductQuantityForm(self.request.POST)
+
 
 class CartView(DetailView):
     model = OrderItem
