@@ -18,20 +18,21 @@
         {% else %}
         <span class="lead">${{ object.price }}</span>
         {% endif %}
+        <form action="{{ product.get_add_to_cart_url }}" method="post">
+          {% csrf_token %}
         <label for="stepper" class="d-block mt-3">Quantity</label>
         <div class="stepper mb-5">
           <button class="custom-btn" disabled>
             <i class="fa fa-minus" aria-hidden="true"></i>
           </button>
-          <input id="stepper" value="1" min="1" max="10" readonly />
+            <input id="stepper" name="quantity" value="1" min="1" max="10" readonly />
           <button class="custom-btn">
             <i class="fa fa-plus" aria-hidden="true"></i>
           </button>
         </div>
-        <a href="" class="btn btn-primary btn-lg">
-          ADD TO CART
-          <i class="fas fa-shopping-cart"></i>
-        </a>
+          <input type="submit" class="btn btn-primary btn-lg" value="ADD TO CART">
+        </form>
+      </div>
     </div>
   </div>
 </main>
