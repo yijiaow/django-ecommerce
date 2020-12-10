@@ -1,39 +1,42 @@
 {% extends "base.html" %}
 
+{% load static %} 
+
 {% block content %}
-<main class="p-5">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-6">
-        <img src="{{ object.imageURL }}" class="w-100" alt="{{ object.name }}" />
-      </div>
-      <div class="col-md-6 pl-5 pr-5">
-        <h3 class="lead font-weight-bold">{{ object.name }}</h3>
-        <p>{{ object.description }}</p>
-        {% if object.discount_price %}
-        <p class="lead">
-          <span><del>{{ object.price }}</del></span>
-          <span>${{ object.discount_price }}</span> 
-        </p>
-        {% else %}
-        <span class="lead">${{ object.price }}</span>
-        {% endif %}
-        <form action="{{ product.get_add_to_cart_url }}" method="post">
-          {% csrf_token %}
-        <label for="stepper" class="d-block mt-3">Quantity</label>
-        <div class="stepper mb-5">
-          <button class="custom-btn" disabled>
-            <i class="fa fa-minus" aria-hidden="true"></i>
-          </button>
-            <input id="stepper" name="quantity" value="1" min="1" max="10" readonly />
-          <button class="custom-btn">
-            <i class="fa fa-plus" aria-hidden="true"></i>
-          </button>
+  <main class="p-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <img
+            src="{{ object.imageURL }}"
+            class="w-100"
+            alt="{{ object.name }}"
+          />
         </div>
-          <input type="submit" class="btn btn-primary btn-lg" value="ADD TO CART">
-        </form>
+        <div class="col-md-6 pl-5 pr-5">
+          <h3 class="lead font-weight-bold">{{ object.name }}</h3>
+          <p>{{ object.description }}</p>
+          {% if object.discount_price %}
+            <p class="lead">
+              <span><del>{{ object.price }}</del></span>
+              <span>${{ object.discount_price }}</span>
+            </p>
+          {% else %}
+            <span class="lead">${{ object.price }}</span>
+          {% endif %}
+          <form method="post">
+            {% csrf_token %}
+            {{ form }}
+            <button type="submit" class="btn btn-primary btn-lg">
+              ADD TO CART
+            </button>
+          </form>
+        </div>
       </div>
     </div>
-  </div>
-</main>
-{% endblock content %}
+  </main>
+{% endblock content %} 
+
+{% block extra_scripts %}
+  <script type="text/javascript" src="{% static 'js/numberStepper.js' %}"></script>
+{% endblock extra_scripts %}
