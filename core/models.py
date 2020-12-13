@@ -57,7 +57,51 @@ class OrderItem(models.Model):
     def get_item_cost(self):
         return self.item.price * self.quantity
 
-    @property
-    def cart_total(self):
-        total = sum([item.get_total() for item in self.items])
-        return total
+class Cart(object):
+    def __init__(self, request):
+        self.session = request.session
+        cart = self.session.get(settings.CART_SESSION_KEY)
+        if not cart:
+            cart = self.session[settings.CART_SESSION_KEY] = {}
+        self.cart = cart
+
+    def __iter__(self):
+        ids = self.cart.keys()
+        products = Product.objects.filter(id__in=ids)
+        cart = self.cart.copy()
+        for product in products:
+            cart[str(product.id)]['product'] = product
+        for item in cart.values():
+            item['total_price'] = Decimal(
+                item['product'].price) * item['quantity']
+            yield item
+
+    def __len__(self):
+        return sum(item['quantity'] for item in self.cart.values())
+
+    def add(self, item, quantity=1, override=False):
+        product_id = str(item.id)
+        if product_id not in self.cart:
+            self.cart[product_id] = {
+                'quantity': quantity}
+        elif override:
+            self.cart[product_id]['quantity'] = quantity
+        else:
+            self.cart[product_id]['quantity'] += quantity
+        self.save()
+
+    def remove(self, item):
+        product_id = str(item.id)
+        if product_id in self.cart:
+            del self.cart[product_id]
+            self.save()
+
+    def clear(self):
+        del self.session[settings.CART_SESSION_KEY]
+        self.save()
+
+    def save(self):
+        self.session.modiefied = True
+
+    def get_total_price(self):
+        return sum(Decimal(item['total_price']) for item in self.cart.values())
