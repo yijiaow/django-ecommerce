@@ -1,0 +1,123 @@
+{% extends "base.html" %} 
+
+{% load static %} 
+
+{% block content %}
+  <main class="container">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="row">
+          <div class="col-md-8">
+            <h4 class="mb-3">Shipping Address</h4>
+            {% if default_shipping_address %}
+              <input
+                type="checkbox"
+                id="use_default_shipping"
+                name="use_default_shipping"
+                class="form-check"
+              />
+              <label for="use_default_shipping">
+                Use default shipping address:
+                {{ default_shipping_address.street_address|truncatechars:10 }}
+              </label>
+            {% endif %}
+            <form
+              method="post"
+              class="hideable_shipping_form needs-validation"
+              novalidate
+            >
+              {% csrf_token %}
+              <div class="form-group row">
+                <label for="{{ user_form.email.id_for_label }}">Email</label>
+                {{ shipping_form.email }}
+              </div>
+              <div class="row">
+                <div class="form-group">
+                  <label for="{{ shipping_form.first_name.id_for_label }}"
+                    >First Name</label
+                  >
+                  {{ shipping_form.first_name }}
+                </div>
+                <div class="form-group">
+                  <label for="{{ shipping_form.last_name.id_for_label }}"
+                    >Last Name</label
+                  >
+                  {{ shipping_form.last_name }}
+                </div>
+              </div>
+              <div class="form-group row">
+                <label
+                  for="{{ shipping_form.street_address_line1.id_for_label }}"
+                  >Street Address</label
+                >
+                {{ shipping_form.street_address_line1 }}
+              </div>
+              <div class="form-group row">
+                <label
+                  for="{{ shipping_form.street_address_line2.id_for_label }}"
+                  >Street Address Line 2 (Optional)</label
+                >
+                {{ shipping_form.street_address_line2 }}
+              </div>
+              <div class="row">
+                <div class="form-group">
+                  <label for="{{ shipping_form.city.id_for_label }}"
+                    >City</label
+                  >
+                  {{ shipping_form.city }}
+                </div>
+                <div class="form-group">
+                  <label for="{{ shipping_form.state.id_for_label }}"
+                    >State</label
+                  >
+                  {{ shipping_form.state }}
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group">
+                  <label for="{{ shipping_form.country.id_for_label }}"
+                    >Country</label
+                  >
+                  {{ shipping_form.country }}
+                </div>
+                <div class="form-group">
+                  <label for="{{ shipping_form.zip_code.id_for_label }}"
+                    >Zip Code</label
+                  >
+                  {{ shipping_form.zip_code }}
+                </div>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="set_default_shipping" name="set_default_shipping" class="" />
+                <label for="set_default_shipping">
+                  Save as default shipping address
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  type="checkbox"
+                  id="same_billing_address"
+                  name="same_billing_address"
+                  class="form-check-input"
+                />
+                <label class="form-check-label" for="same_billing_address"
+                  >Billing address is the same as shipping address</label
+                >
+              </div>
+              <button type="submit" class="btn btn-primary">
+                CONTINUE TO PAYMENT
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        {% include 'order-summary.html' %}
+      </div>
+    </div>
+  </main>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script type="text/javascript" src="{% static 'js/addressToggler.js' %}"></script>
+{% endblock extra_scripts %}
