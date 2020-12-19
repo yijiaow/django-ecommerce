@@ -79,7 +79,42 @@ class CartView(DetailView):
 
 
 class CheckoutView(View):
-    pass
+    def get(self, request, *args, **kwargs):
+        cart = Cart(request)
+        context = {
+            'cart': cart,
+            'shipping_form': CheckoutForm()
+        }
+        if request.user.is_authenticated:
+            print('CURRENT USER: ', request.user.email, request.user.first_name)
+            shipping_address_qs = Address.objects.filter(
+                user=request.user, address_type='S', default=True)
+            if shipping_address_qs.exists():
+                context.update(
+                    {'default_shipping_address': shipping_address_qs[0]})
+        return render(request, 'checkout.html', context)
+
+    def post(self, request, *args, **kwargs):
+        cart = Cart(request)
+        shipping_form = CheckoutForm(request.POST)
+        if shipping_form.is_valid():
+            cd = shipping_form.cleaned_data
+            shipping_address = shipping_form.save(commit=False)
+            shipping_address.user = request.user
+            if (cd.get('set_default_shipping')):
+                shipping_address.default = True
+            shipping_address.save()
+
+            # Create order
+            order = Order.objects.create(
+                email=request.user.email, shipping_address=shipping_address)
+            for item in cart:
+                OrderItem.objects.create(
+                    order=order, item=item['product'], quantity=item['quantity'])
+            cart.clear()
+
+        # Redirect to payment
+        return redirect('core:payment')
 
 
 def store(request):
