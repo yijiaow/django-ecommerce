@@ -1,11 +1,11 @@
-from django.shortcuts import reverse, render, redirect
+from django.shortcuts import reverse, render, redirect, get_object_or_404
 from django.contrib import messages
 from django.views.generic import View, ListView, DetailView, FormView
 from django.views.generic.detail import SingleObjectMixin
 from django.http import HttpResponseForbidden
 
 from .models import Product, OrderItem, Order, Cart, Address
-from .forms import ProductQuantityForm, CheckoutForm
+from .forms import ProductQuantityForm, CheckoutForm, BillingAddressForm
 
 
 class StoreView(ListView):
@@ -115,3 +115,13 @@ class CheckoutView(View):
 
         # Redirect to payment
         return redirect('core:payment')
+
+
+class PaymentView(View):
+    def get(self, request, *args, **kwargs):
+        order_id = request.session.get('order_id')
+        order = get_object_or_404(Order, id=order_id)
+        context = {'billing_form': BillingAddressForm()}
+        if order.shipping_address:
+            context['shipping_address'] = order.shipping_address
+        return render(request, 'payment.html', context)
