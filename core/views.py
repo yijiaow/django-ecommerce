@@ -5,7 +5,7 @@ from django.views.generic.detail import SingleObjectMixin
 from django.http import HttpResponseForbidden
 
 from .models import Product, OrderItem
-from .forms import ProductQuantityForm
+from .forms import ProductQuantityForm, BillingAddressForm
 
 
 class StoreView(ListView):
@@ -120,3 +120,13 @@ class CheckoutView(View):
 def store(request):
     context = {}
     return render(request, 'store.html', context)
+
+
+class PaymentView(View):
+    def get(self, request, *args, **kwargs):
+        order_id = request.session.get('order_id')
+        order = get_object_or_404(Order, id=order_id)
+        context = {'billing_form': BillingAddressForm()}
+        if order.shipping_address:
+            context['shipping_address'] = order.shipping_address
+        return render(request, 'payment.html', context)
