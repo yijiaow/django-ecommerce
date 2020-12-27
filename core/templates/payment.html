@@ -30,24 +30,86 @@
           <button type="submit" class="btn btn-primary">Submit Payment</button>
           <div id="card-error" role="alert"></div>
     </form>
-    <div>
-      {{ shipping_address.street_address_line1 }}
+        {% if shipping_address %}
+          <div class="form-check">
+            <input
+              type="checkbox"
+              id="same_as_shhipping"
+              name="same_as_shipping"
+              class="form-check-input"
+              checked
+            />
+            <label for="same_as_shipping" class="form-check-label">
+              Billing address is the same as shipping address
+            </label>
     </div>
-    {% if shipping_address and billing_form.same_as_shipping.value %}
+          <div id="hideable-shipping-address">
       <p>{{ shipping_address.first_name }} {{ shipping_address.last_name }}</p>
       <p>{{ shipping_address.street_address_line1|truncatechars:10 }}</p>
       {% if shipping_address.street_address_line2 %}
         <p>{{ shipping_address.street_address_line2|truncatechars:10 }}</p>
       {% endif %}
       <p>{{ shipping_address.city }}, {{ shipping_address.state}} {{ shipping_address.zip_code }}</p>
+          </div>
     {% endif %}
-    <form method="post">
-        {{ billing_form }}
-        <button type="submit" class="btn btn-primary">PLACE ORDER</button>
+        <form method="post" class="hideable-billing-form needs-validation" novalidate hidden>
+          {% csrf_token %}
+          <div class="form-group row">
+            {{ billing_form.email.label_tag }}
+            {{ billing_form.email }}
+          </div>
+          <div class="row">
+            <div class="form-group">
+              {{ billing_form.first_name.label_tag }}
+              {{ billing_form.first_name }}
+            </div>
+            <div class="form-group">
+              {{ billing_form.last_name.label_tag }}
+              {{ billing_form.last_name }}
+            </div>
+          </div>
+          <div class="form-group row">
+            <label
+              for="{{ billing_form.street_address_line1.id_for_label }}"
+              >Street Address</label
+            >
+            {{ billing_form.street_address_line1 }}
+          </div>
+          <div class="form-group row">
+            <label
+              for="{{ billing_form.street_address_line2.id_for_label }}"
+              >Street Address Line 2 (Optional)</label
+            >
+            {{ billing_form.street_address_line2 }}
+          </div>
+          <div class="row">
+            <div class="form-group">
+              {{ billing_form.city.label_tag }}
+              {{ billing_form.city }}
+            </div>
+            <div class="form-group">
+              {{ billing_form.state.label_tag }}
+              {{ billing_form.state }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group">
+              {{ billing_form.country.label_tag }}
+              {{ billing_form.country }}
+            </div>
+            <div class="form-group">
+              {{ billing_form.zip_code.label_tag }}
+              {{ billing_form.zip_code }}
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            PLACE ORDER
+          </button>
     </form>
   </main>
 {% endblock content %}
 
 {% block extra_scripts %}
   <script type="text/javascript" src="{% static 'js/stripe.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/billingAddressToggle.js' %}"></script>
 {% endblock extra_scripts%}
