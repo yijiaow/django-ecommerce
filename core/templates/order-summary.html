@@ -1,19 +1,52 @@
-<ul class="list-group">
-  <li class="list-group-item text-center font-weight-bold">Order Summary</li>
-  <li class="list-group-item d-flex justify-content-between">
-    <span>Subtotal</span>
-    <span>${{ cart.get_total_price|floatformat:2 }}</span>
-  </li>
-  <li class="list-group-item d-flex justify-content-between">
-    <span>Shipping</span>
-    <span>Free</span>
-  </li>
-  <li class="list-group-item d-flex justify-content-between">
-    <span>Sales Tax</span>
-    <span>$0.00</span>
-  </li>
-  <li class="list-group-item d-flex justify-content-between font-weight-bold">
-    <span>Total</span>
-    <span>${{ cart.get_total_price|floatformat:2 }}</span>
-  </li>
-</ul>
+<div class="d-flex flex-column-reverse p-3 bg-light">
+  {% if 'cart' not in request.path %}
+    <div class="mt-5">
+      <h6 class="mb-3 font-weight-bold">
+        Items in your cart ({{ cart|length }})
+      </h6>
+      <ul class="list-group list-group-flush">
+        {% for item in cart %}
+          {% with product=item.product %}
+            <li class="list-group-item px-0 bg-transparent">
+              <div class="row flex-nowrap align-items-start">
+                <div class="col">
+                  <img class="card-img-top thumbnail" src="{{ product.imageURL }}" />
+                </div>
+                <div class="col">
+                  <p>{{ product.name }}</p>
+                </div>
+                <div class="col">
+                  <p>Qty: {{ item.quantity }}</p>
+                  <p>${{ item.total_price }}</p>
+                </div>
+              </div>
+            </li>
+          {% endwith %}
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item border-0 bg-transparent text-center">
+      <h6 class="font-weight-bold">Order Summary</h6>
+    </li>
+    <li class="list-group-item d-flex justify-content-between bg-transparent">
+      <span>Subtotal</span>
+      <span>${{ cart.get_total_price|floatformat:2 }}</span>
+    </li>
+    <li class="list-group-item d-flex justify-content-between bg-transparent">
+      <span>Shipping</span>
+      <span>Free</span>
+    </li>
+    <li class="list-group-item d-flex justify-content-between bg-transparent">
+      <span>Sales Tax</span>
+      <span>$0.00</span>
+    </li>
+    <li
+      class="list-group-item d-flex justify-content-between font-weight-bold bg-transparent"
+    >
+      <span>Total</span>
+      <span>${{ cart.get_total_price|floatformat:2 }}</span>
+    </li>
+  </ul>
+</div>
