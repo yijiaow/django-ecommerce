@@ -1,11 +1,15 @@
+from django.conf import settings
 from django.shortcuts import reverse, render, redirect, get_object_or_404
 from django.contrib import messages
 from django.views.generic import View, ListView, DetailView, FormView
 from django.views.generic.detail import SingleObjectMixin
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, JsonResponse
 
 from .models import Product, OrderItem, Order, Cart, Address
 from .forms import ProductQuantityForm, CheckoutForm, BillingAddressForm
+
+import stripe
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 class StoreView(ListView):
@@ -115,6 +119,18 @@ class CheckoutView(View):
 
         # Redirect to payment
         return redirect('core:payment')
+
+
+def create_payment(request):
+    order_id = request.session.get('order_id')
+    order = get_object_or_404(Order, id=order_id)
+    amount = int(order.get_total() * 100)
+    try:
+        intent = stripe.PaymentIntent.create(
+            amount=amount, currency='usd', payment_method_types=['card'])
+        return JsonResponse({'client_secret': intent['client_secret']})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=403)
 
 
 class PaymentView(View):
