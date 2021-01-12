@@ -66,5 +66,46 @@ const payWithCard = (stripe, card, client_secret) => {
         card: card,
       },
     })
-    .then((res) => console.log(res));
+    .then((res) => {
+      if (res.error) {
+        showError(res.error.message);
+      } else {
+        orderComplete(res.paymentIntent.id);
+      }
+    });
+};
+
+/* ------- UI helpers ------- */
+
+// Show a success message when payment is complete
+const orderComplete = (paymentIntentId) => {
+  loading(false);
+  document
+    .querySelector('.result-message a')
+    .setAttribute(
+      'href',
+      `https://dashboard.stripe.com/test/payments/${paymentIntentId}`
+    );
+  document.querySelector('.result-message').classList.remove('hidden');
+  document.querySelector(`button[type='submit']`).disabled = true;
+};
+
+// Show customer the error from Stripe if the card fails to charge
+const showError = (errorMsg) => {
+  loading(false);
+  document.querySelector('#card-error').textContent = errorMsg;
+};
+
+// Show a spinner on payment submission
+const loading = (isLoading) => {
+  if (isLoading) {
+    // Disable submit button and show a spinner
+    document.querySelector(`button[type='submit']`).disabled = true;
+    document.querySelector('#spinner').classList.remove('hidden');
+    document.querySelector('#btn-text').classList.add('hidden');
+  } else {
+    document.querySelector(`button[type='submit']`).disabled = false;
+    document.querySelector('#spinner').classList.add('hidden');
+    document.querySelector('#btn-text').classList.remove('hidden');
+  }
 };

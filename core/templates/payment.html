@@ -27,8 +27,15 @@
           <div id="card-element" class="StripeElement StripeElement--empty mt-5 mb-3">
             <!-- Stripe.js injects the Card Element -->
       </div>
-          <button type="submit" class="btn btn-primary">Submit Payment</button>
-          <div id="card-error" role="alert"></div>
+          <button type="submit" class="btn btn-primary">
+            <div id="spinner" class="spinner hidden"></div>
+            <span id="btn-text">PLACE ORDER</span>
+          </button>
+          <p id="card-error" role="alert"></p>
+          <p class="result-message hidden">
+            Payment succeeded. See result in your
+            <a href="" target="_blank">Stripe dashboard.</a>
+          </p>
     </form>
         {% if shipping_address %}
           <div class="form-check">
