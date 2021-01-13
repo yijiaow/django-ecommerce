@@ -61,54 +61,9 @@
     {% endif %}
         <form method="post" class="hideable-billing-form needs-validation" novalidate hidden>
           {% csrf_token %}
-          <div class="form-group row">
-            {{ billing_form.email.label_tag }}
-            {{ billing_form.email }}
-          </div>
-          <div class="row">
-            <div class="form-group">
-              {{ billing_form.first_name.label_tag }}
-              {{ billing_form.first_name }}
-            </div>
-            <div class="form-group">
-              {{ billing_form.last_name.label_tag }}
-              {{ billing_form.last_name }}
-            </div>
-          </div>
-          <div class="form-group row">
-            <label
-              for="{{ billing_form.street_address_line1.id_for_label }}"
-              >Street Address</label
-            >
-            {{ billing_form.street_address_line1 }}
-          </div>
-          <div class="form-group row">
-            <label
-              for="{{ billing_form.street_address_line2.id_for_label }}"
-              >Street Address Line 2 (Optional)</label
-            >
-            {{ billing_form.street_address_line2 }}
-          </div>
-          <div class="row">
-            <div class="form-group">
-              {{ billing_form.city.label_tag }}
-              {{ billing_form.city }}
-            </div>
-            <div class="form-group">
-              {{ billing_form.state.label_tag }}
-              {{ billing_form.state }}
-            </div>
-          </div>
-          <div class="row">
-            <div class="form-group">
-              {{ billing_form.country.label_tag }}
-              {{ billing_form.country }}
-            </div>
-            <div class="form-group">
-              {{ billing_form.zip_code.label_tag }}
-              {{ billing_form.zip_code }}
-            </div>
-          </div>
+          {% with form=billing_form %}
+            {% include 'address-form.html' %}
+          {% endwith %}
           <button type="submit" class="btn btn-primary">
             PLACE ORDER
           </button>
