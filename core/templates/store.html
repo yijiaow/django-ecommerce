@@ -18,27 +18,24 @@
 
         <!-- Product categories -->
         <ul class="navbar-nav w-100 justify-content-center">
-          <li class="category active">
-            <a href="" class="nav-link">All</a>
-          </li>
           <li class="category">
-            <a href="" class="nav-link">Art</a>
+            <a href="/" class="nav-link
+              {% if not category_slug %}
+                active
+              {% endif %}"
+            >
+              All
+            </a>
           </li>
-          <li class="category">
-            <a href="" class="nav-link">Fun</a>
-          </li>
-          <li class="category">
-            <a href="" class="nav-link">Home</a>
-          </li>
-          <li class="category">
-            <a href="" class="nav-link">Kitchen & Bar</a>
-          </li>
-          <li class="category">
-            <a href="" class="nav-link">Garden</a>
-          </li>
-          <li class="category">
-            <a href="" class="nav-link">Tech</a>
-          </li>
+          {% for category in categories %}
+            <li class="category
+              {% if category.slug == category_slug %}
+                active
+              {% endif %}"
+            >
+              <a href="{{ category.get_absolute_url }}" class="nav-link">{{ category.name }}</a>
+            </li>
+          {% endfor %}
         </ul>
       </div>
     </nav>

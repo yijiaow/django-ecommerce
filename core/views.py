@@ -5,16 +5,28 @@ from django.views.generic import View, ListView, DetailView, FormView
 from django.views.generic.detail import SingleObjectMixin
 from django.http import HttpResponseForbidden, JsonResponse
 
-from .models import Product, OrderItem, Order, Cart, Address
-from .forms import ProductQuantityForm, CheckoutForm, BillingAddressForm
+from .models import Product, Category, OrderItem, Order, Cart, Address
 
 import stripe
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 class StoreView(ListView):
-    model = Product
     template_name = 'store.html'
+
+    def get_queryset(self):
+        if self.kwargs.get('category_slug'):
+            category = get_object_or_404(
+                Category, slug=self.kwargs.get('category_slug'))
+            return Product.objects.filter(category=category)
+        else:
+            return Product.objects.all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()
+        context['category_slug'] = self.kwargs.get('category_slug')
+        return context
 
 
 class ProductDisplay(DetailView):
